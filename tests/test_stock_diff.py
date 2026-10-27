@@ -147,6 +147,12 @@ class ContractTests(Fixture):
         with self.assertRaisesRegex(ContractError, 'ROW_COUNT_MISMATCH'):
             self.result()
 
+    def test_manifest_must_be_an_object(self):
+        for raw in (b'null', b'[]', b'1', b'[' * 1500 + b']' * 1500):
+            (self.after / 'snapshot.json').write_bytes(raw)
+            with self.assertRaisesRegex(ContractError, 'MANIFEST_FIELDS'):
+                self.result()
+
     def test_explicit_byte_and_row_limits(self):
         self.csv_bytes(self.after, b'x' * (MAX_BYTES + 1))
         with self.assertRaisesRegex(ContractError, 'INPUT_TOO_LARGE'):

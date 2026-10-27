@@ -21,7 +21,7 @@
       "problemMatcher": []
     },
     {
-      "label": "Я проверяю 21 тест",
+      "label": "Я проверяю 22 теста",
       "type": "process",
       "command": "${workspaceFolder}/.venv/bin/python",
       "windows": {

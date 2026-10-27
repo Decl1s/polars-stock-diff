@@ -5,7 +5,7 @@ Polars 2.1.0, polars-runtime-32 2.1.0, uv 0.13.1, Git 2.53.0.
 
 | Проверка | Фактический результат |
 | --- | --- |
-| Unit/integration | 21 тест, exit 0: ключ/нули/типизированная пустота/scope/time/partial/CSV/числа/hash/пределы/повтор/повреждение/lock/сбой/сохранение чужого каталога |
+| Unit/integration | 22 теста, exit 0: ключ/нули/типизированная пустота/scope/time/partial/CSV/числа/hash/пределы/повтор/повреждение/lock/сбой/сохранение чужого каталога |
 | CLI smoke | Отдельные процессы generate/compare/inspect/demo; 4 изменения, Parquet round-trip, повтор, partial и ошибочные входы без output; exit 0 |
 | Runtime compatibility | uv pip check: обе distributions совместимы |
 | ZIP round-trip | 26 UTF-8 исходников по PUBLIC_FILES.txt, байты каждого сверены; распакованный demo завершился 0 и показал четыре изменения |
@@ -17,7 +17,11 @@ Polars 2.1.0, polars-runtime-32 2.1.0, uv 0.13.1, Git 2.53.0.
 строк, исправил canonical JSON и lineterminator CSV до запуска demo. Первый сетевой
 запрос uv в sandbox получил DNS error; повторил его с разрешённым сетевым доступом,
 без смены registry и без глобальной установки. Это не ошибка сравнения данных.
-После этого основной demo, 21 тест и CLI smoke прошли с первого прогона.
+Первый набор из 21 теста, demo и CLI smoke прошёл. Дополнительный тест
+первоначально ожидал ошибку парсера для вложенного массива. Массив является
+валидным JSON, а контракт правильно отклоняет его как MANIFEST_FIELDS. Я исправил
+ожидание теста и добавил null/array/number как неверные top-level manifests.
+Итоговый набор содержит 22 теста.
 
 Я отдельно сверил installed API join (full,coalesce,validate) и контрольные значения:
 INSERT=1,DELETE=1,UPDATE=2,UNCHANGED=2; on_hand 26→23, reserved 4→6, available 22→17.
