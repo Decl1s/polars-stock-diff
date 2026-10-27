@@ -1,0 +1,9 @@
+/.venv/
+/.cache/
+/workspace/
+/artifacts/
+__pycache__/
+*.pyc
+.env
+.env.*
+/AGENTS.md

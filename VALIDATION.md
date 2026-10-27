@@ -1,0 +1,32 @@
+# Что я фактически проверил
+
+27.10.2026 · версия 0.1.0. Локальная среда: Linux x86_64, CPython 3.12.15,
+Polars 2.1.0, polars-runtime-32 2.1.0, uv 0.13.1, Git 2.53.0.
+
+| Проверка | Фактический результат |
+| --- | --- |
+| Unit/integration | 21 тест, exit 0: ключ/нули/типизированная пустота/scope/time/partial/CSV/числа/hash/пределы/повтор/повреждение/lock/сбой/сохранение чужого каталога |
+| CLI smoke | Отдельные процессы generate/compare/inspect/demo; 4 изменения, Parquet round-trip, повтор, partial и ошибочные входы без output; exit 0 |
+| Runtime compatibility | uv pip check: обе distributions совместимы |
+| ZIP round-trip | 26 UTF-8 исходников по PUBLIC_FILES.txt, байты каждого сверены; распакованный demo завершился 0 и показал четыре изменения |
+| CI Linux/Windows | Результат отдельно фиксирую в [Actions](https://github.com/Decl1s/polars-stock-diff/actions); локально Windows не запускал |
+| Source / release | Проверяю удалённое дерево, [релиз](https://github.com/Decl1s/polars-stock-diff/releases) и скачанные ZIP/SHA256SUMS отдельно |
+
+Реальные ошибки разработки: при первоначальной генерации файлов я неверно
+экранировал LF в двух строковых литералах. При просмотре исходников увидел разрыв
+строк, исправил canonical JSON и lineterminator CSV до запуска demo. Первый сетевой
+запрос uv в sandbox получил DNS error; повторил его с разрешённым сетевым доступом,
+без смены registry и без глобальной установки. Это не ошибка сравнения данных.
+После этого основной demo, 21 тест и CLI smoke прошли с первого прогона.
+
+Я отдельно сверил installed API join (full,coalesce,validate) и контрольные значения:
+INSERT=1,DELETE=1,UPDATE=2,UNCHANGED=2; on_hand 26→23, reserved 4→6, available 22→17.
+Сбой до rename не оставляет итогового каталога, повтор публикует его заново.
+Повтор уже готового результата сверяет bytes и возвращает reused=true.
+
+Я не проверял power loss, network FS, враждебные symlink races, большую нагрузку,
+macOS, GUI IDE или реальную WMS. Lock проверен столкновением в одном процессе;
+реальный параллельный стресс не проводил. После SIGKILL могут остаться собственные
+staging/lock: удаляю их вручную только после проверки, что writer завершён.
+Hash не доказывает подлинность/полноту источника. Под итоговым именем публикую
+согласованный локальный каталог, не обещаю распределённую транзакцию или exactly-once.
