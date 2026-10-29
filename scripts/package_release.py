@@ -6,7 +6,7 @@ import re
 import zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
-NAME='polars-stock-diff-0.1.0-sources.zip'
+NAME='polars-stock-diff-0.1.1-sources.zip'
 
 def sources():
     names=(ROOT/'PUBLIC_FILES.txt').read_text(encoding='utf-8').splitlines()

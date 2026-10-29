@@ -9,7 +9,7 @@ from urllib.request import Request,urlopen
 from package_release import ROOT,archive
 
 REPOSITORY='Decl1s/polars-stock-diff'
-TAG='v0.1.0'
+TAG='v0.1.1'
 
 def main():
     if os.environ.get('GITHUB_REPOSITORY')!=REPOSITORY or os.environ.get('GITHUB_REF')!='refs/heads/main' or os.environ.get('GITHUB_EVENT_NAME')!='push':raise ValueError('RELEASE_CONTEXT')
@@ -34,7 +34,7 @@ def main():
         if error.code!=404:raise
         drafts=[r for r in api('/releases?per_page=100') if r['tag_name']==TAG]
         if len(drafts)>1:raise ValueError('RELEASE_AMBIGUOUS_DRAFT')
-        release=drafts[0] if drafts else api('/releases',method='POST',value={'tag_name':TAG,'target_commitish':sha,'name':'Разница складских снимков 0.1.0','draft':True,'prerelease':False,'body':'Я выпускаю учебное сравнение полных складских снимков на Polars 2.1.0: составной full join, INSERT/DELETE/UPDATE, nullable Parquet и проверяемая сводка JSON. Я блокирую partial и дубли, сохраняю старые и новые значения, показываю повтор и восстановление публикации. Подробный разбор и задания — NOTES.md, проверки — VALIDATION и Actions. Архив содержит только PUBLIC_FILES, без входных файлов, результатов, окружения и контактов.'})
+        release=drafts[0] if drafts else api('/releases',method='POST',value={'tag_name':TAG,'target_commitish':sha,'name':'Разница складских снимков 0.1.1','draft':True,'prerelease':False,'body':'Я обновил навигацию документации и согласовал patch-версию исходного архива. Бизнес-правила и зависимости я сохранил. Я выпускаю учебное сравнение полных складских снимков на Polars 2.1.0: составной full join, INSERT/DELETE/UPDATE, nullable Parquet и проверяемая сводка JSON. Я блокирую partial и дубли, сохраняю старые и новые значения, показываю повтор и восстановление публикации. Подробный разбор и задания — NOTES.md, проверки — VALIDATION и Actions. Архив содержит только PUBLIC_FILES, без входных файлов, результатов, окружения и контактов.'})
     if release['target_commitish']!=sha:raise ValueError('RELEASE_TARGET_CONFLICT')
     rid=release['id'];existing={v['name']:v for v in api('/releases/'+str(rid)+'/assets')}
     for name in (evidence['archive'],'SHA256SUMS'):
